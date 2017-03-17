@@ -1,12 +1,12 @@
 #!/usr/bin/env python2.7
 #import numpy as np
+import argparse
 from scipy.stats import gaussian_kde, lognorm, norm, gamma
 from scipy.special import gammaln
 from scipy.optimize import minimize
 from pandas import DataFrame, read_table
 from numpy import append, array, copy, exp, isnan, log, median, sqrt, sum, zeros, inf, pi
 from numpy.random import random as np_random
-from sys import argv
 from os.path import isfile
 
 def indLognormalPdf( logX, logY, halfLogSqX, halfLogSqY, logConstX, logConstY ):
@@ -187,7 +187,6 @@ def deterministicMstep( x, y, lnXind, lnYind, lnXint, lnYint, weights, ltype='lo
         ydata = y
 
     res = minimize( mStep, params.tolist(), args=(weights,xdata,ydata), tol=1e-6, method='Powell' )
-    #res = minimize( lognormalMstep, params.tolist(), args=(weights,logx,logy), tol=1e-6, bounds=bounds, method='Powell' )
 
     qVal = -res['fun'] 
     newParams = res['x']
@@ -347,41 +346,21 @@ def run( inputFileName, ltype="lognormal", outputFileName="", nEMitr=10000 ):
     xy.loc[:,2] = probInt
     xy.to_csv( outputFileName, sep="\t", index=False, header=None )
 
-def usageInfo( ):
-    print('Usage : ./cpiEm.py <input file name> [<mixturetype> <max EM iterations> <output file name>]')
-    print('\n<mixturetype> (Optional)can be lognormal, gaussian or gamma. Default : lognormal')
-    print('\n<max EM iterations> (Optional) is the maximum number of EM iterations to execute. Default : 10000')
-    print('\n<output file name> (Optional) is the file to which output will be written. Default output file : <input file name>.cpi-em')
-    print('\nInput should be a tab-separated file with two columns consisting of primary TF peak intensities (first column) and partner TF peak intensities (second column). The partner TF is assumed to be TF that cooperatively aids in binding the primary TF to DNA.')
-    print('\nOutput consists of a three column tab-separated file, with the third column containing the probability that the partner TF helped the primary TF bind DNA at that location. The first two columns are the primary and partner TF peak intensities that were provided as the input.')
-
 def main():
-    if len(argv) == 1:
-        print('No input file specified.')
-        usageInfo()
-    elif len(argv) == 2:
-        run( argv[1] )
-    elif len(argv) == 3:
-        run( argv[1], ltype=argv[2] )
-    elif len(argv) > 3:
-        try:
-            nEMitr = int(argv[3])
-        except ValueError:
-            print('Max. number of EM iterations specified : {}'.format( argv[3] ))
-            print('Max. number of EM iterations must be a positive number.')
-            print('No output produced.\n')
-            print('==================================================')
-            usageInfo()
-            return None
+    parser = argparse.ArgumentParser()
 
-        if len(argv) == 4:
-            run( argv[1], ltype=argv[2], nEMitr=nEMitr )
-        elif len(argv) == 5:
-            run( argv[1], ltype=argv[2], outputFileName=argv[4], nEMitr=nEMitr )
-        else:
-            print('No output produced.\n')
-            print('==================================================')
-            usageInfo()
+    parser.add_argument( '--input-file', help="Name of input file. Input should be a tab-separated file with two columns consisting of primary TF peak intensities (first column) and partner TF peak intensities (second column). The partner TF is assumed to be TF that cooperatively aids in binding the primary TF to DNA.", nargs=1, metavar="<input file>", required=True )
+    parser.add_argument( '--mixture', help="Distribution to be used to model peak intensities. Can be lognormal, gaussian or gamma.  Default : lognormal", nargs=1, metavar="<dist>", default="lognormal", choices=["lognormal","gamma","gaussian"])
+    parser.add_argument( '--output-file', help="File to which output will be written. Default : <input file>.cpi-em ", nargs=1, metavar="<output file>", default="" )
+    parser.add_argument( '--num-iterations', help="Maximum number of EM iterations to execute. Default : 10000", nargs=1, metavar="<NUM>", default=[10000], type=int )
+
+    args = vars(parser.parse_args())
+    inputFile = args['input_file'][0]
+    ltype = args['mixture'][0]
+    nEMitr = args['num_iterations'][0]
+    outputFile = args['output_file'][0]
+
+    run( inputFile, ltype=ltype, outputFileName=outputFile, nEMitr=nEMitr )
 
 if __name__ == "__main__":
     main()
