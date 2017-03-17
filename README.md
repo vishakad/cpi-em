@@ -2,6 +2,10 @@
 ChIP-seq Peak Intensity - Expectation Maximization (CPI-EM) algorithm for detecting cooperatively bound transcription factor pairs. Paper reference to be updated soon. 
 
 # Manual
+## Dependencies
+
+cpiEm requires ```scipy```, ```numpy```, ```pandas``` and ```argparse``` modules to be installed. cpiEm runs with both python 2.7+ and python 3+. 
+
 ## Running cpi-em
 
 The syntax for running cpiEm.py -- 
