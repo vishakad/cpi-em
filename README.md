@@ -6,21 +6,35 @@ ChIP-seq Peak Intensity - Expectation Maximization (CPI-EM) algorithm for detect
 
 The syntax for running cpiEm.py -- 
 
-    ./cpiEm.py <input file name> [<mixturetype> <max EM iterations> <output file name>]')
+    ./cpiEm.py -h
 
-where, 
-`<input file name>` (Mandatory argument) The file name input should point to a file that is a tab-separated file with two columns, which consist of primary TF peak intensities (first column) and partner TF peak intensities (second column). The partner TF is assumed to be TF that cooperatively aids in binding the primary TF to DNA.
-`<mixturetype>` (Optional argument) can be `lognormal`, `gaussian` or `gamma`. Default : `lognormal`
-`<max EM iterations>` (Optional argument) is the maximum number of EM iterations to execute. Default : `10000`
-`<output file name>` (Optional argument) is the file to which output will be written. Default : `<input file name>.cpi-em`
+    usage: cpiEm.py [-h] --input-file <input file> [--mixture <dist>]
+                [--output-file <output file>] [--num-iterations <NUM>]
 
-The output of `cpiEm` consists of a three column tab-separated file, with the third column containing the probability that the partner TF helped the primary TF bind DNA at that location. The first two columns are the primary and partner TF peak intensities that were provided as the input.
+    optional arguments:
+    -h, --help            show this help message and exit
+    -i <input file>, --input-file <input file>
+                        Name of input file. Input should be a tab-separated
+                        file with two columns consisting of primary TF peak
+                        intensities (first column) and partner TF peak
+                        intensities (second column). The partner TF is assumed
+                        to be TF that cooperatively aids in binding the
+                        primary TF to DNA.
+    -m <dist>, --mixture <dist>
+                        Distribution to be used to model peak intensities. Can
+                        be lognormal, gaussian or gamma. Default : lognormal
+    -o <output file>, --output-file <output file>
+                        File to which output will be written. Default : <input
+                        file>.cpi-em
+    -n <NUM>, --num-iterations <NUM>
+                        Maximum number of EM iterations to execute. Default :
+                        10000
 
 ##Sample run 
 
 This is a sample run of the cpi-em algorithm, using the `test-input` file in the repository -- 
 
-    ./cpiEm.py test-input gamma 1000
+    ./cpiEm.py -i test-input -m gamma -n 100
     
 Output :     
 
