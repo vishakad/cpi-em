@@ -350,8 +350,8 @@ def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument( "-i", "--input-file", help="Name of input file. Input should be a tab-separated file with two columns consisting of primary TF peak intensities (first column) and partner TF peak intensities (second column). The partner TF is assumed to be TF that cooperatively aids in binding the primary TF to DNA.", nargs=1, metavar="<input file>", required=True )
-    parser.add_argument( "-m","--mixture", help="Distribution to be used to model peak intensities. Can be lognormal, gaussian or gamma.  Default : lognormal", nargs=1, metavar="<dist>", default="lognormal", choices=["lognormal","gamma","gaussian"])
-    parser.add_argument( "-o", "--output-file", help="File to which output will be written. Default : <input file>.cpi-em ", nargs=1, metavar="<output file>", default="" )
+    parser.add_argument( "-m","--mixture", help="Distribution to be used to model peak intensities. Can be lognormal, gaussian or gamma.  Default : lognormal", nargs=1, metavar="<dist>", default=["lognormal"], choices=["lognormal","gamma","gaussian"])
+    parser.add_argument( "-o", "--output-file", help="File to which output will be written. Default : <input file>.cpi-em ", nargs=1, metavar="<output file>", default=[""] )
     parser.add_argument( "-n", "--num-iterations", help="Maximum number of EM iterations to execute. Default : 10000", nargs=1, metavar="<NUM>", default=[10000], type=int )
 
     args = vars(parser.parse_args())
@@ -359,6 +359,8 @@ def main():
     ltype = args['mixture'][0]
     nEMitr = args['num_iterations'][0]
     outputFile = args['output_file'][0]
+    if len(outputFile) == 0:
+        outputFile = inputFile + ".cpi-em"
 
     run( inputFile, ltype=ltype, outputFileName=outputFile, nEMitr=nEMitr )
 
