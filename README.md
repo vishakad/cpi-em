@@ -38,15 +38,14 @@ The syntax for running cpiEm.py --
 
 This is a sample run of the cpi-em algorithm, using the `test-input` file in the repository -- 
 
-    ./cpiEm.py -i test-input -m gamma -n 100
+    ./cpiEm.py -i test-input -m gamma -n 1000
     
 Output :     
 
     Fitting a gamma mixture to data
     Maximum number of EM iterations to run : 1000
-    EM converged in 134 iterations. Q_2 = -3682.39982174
+    EM converged in 260 iterations. Q_2 = -2275.7959452
     Writing output to test-input.cpi-em
-    The third column is the probability of a cooperative interaction being present for each entry in the input file
     
 The first five lines of `test-input` are :
  
@@ -58,9 +57,10 @@ The first five lines of `test-input` are :
     
 The first five lines of the output file, `test-input.cpi-em`, are : 
 
-    3.59342	20.07449	0.527476792074
-    9.98265	6.6389	0.57156824552
-    7.50183	2.82852	0.519679135763
-    14.07073	7.64249	0.557642531493
-    3.34819	3.8665	0.430667839721
+    3.59342	20.07449	0.767812671493
+    9.98265	6.6389	0.765781602103
+    7.50183	2.82852	0.72318188783
+    14.07073	7.64249	0.743167549103
+    3.34819	3.8665	0.667208640778
+
 
